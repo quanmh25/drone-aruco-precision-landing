@@ -183,11 +183,10 @@
     </link>
     </model>
     
-
     <!-- id = 3 -->
     <include>
         <uri>model://aruco_1</uri>
-        <pose>-2.5 2.7 0.01 0 0 0</pose>
+        <pose>-0.5 2.7 0.01 0 0 0</pose>
     </include>
 
     <!-- id = 23 -->

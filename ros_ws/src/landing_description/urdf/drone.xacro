@@ -59,7 +59,7 @@
       <geometry>
         <box size="0.02 0.02 0.01"/> </geometry>
       <material name="black">
-        <color rgba="0.1 0.1 0.1 1.0"/>
+        <color rgba="1.0 0.0 0.0 1.0"/>
       </material>
     </visual>
   </link>

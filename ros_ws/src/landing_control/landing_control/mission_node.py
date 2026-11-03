@@ -93,10 +93,12 @@ class MissionNode(Node):
         self.create_subscription(Image, '/camera/image_raw', self.image_cb, qos_profile_sensor_data)
         self.create_timer(0.05, self.control)
 
+
     def set_state(self, state):
         if self.state != state:
             self.get_logger().info(f'{self.state} -> {state}')
             self.state = state
+
 
     def odom_cb(self, m):
         p = m.pose.pose.position
@@ -107,11 +109,13 @@ class MissionNode(Node):
         if self.takeoff_xy is None:
             self.takeoff_xy = self.pose[:2].copy()
 
+
     def info_cb(self, m):
         K = np.asarray(m.k,dtype=float).reshape(3,3)
         if K[0,0] > 0 and K[1,1] > 0:
             self.K = K
             self.D = np.asarray(m.d,dtype=float) if m.d else np.zeros(5)
+
 
     @staticmethod
     def point_msg(frame, stamp, xyz):
@@ -120,6 +124,7 @@ class MissionNode(Node):
         m.header.stamp = stamp
         m.point.x,m.point.y,m.point.z = [float(v) for v in xyz]
         return m
+
 
     def image_cb(self, m):
         if self.pose is None or self.K is None or self.state in ('LANDED','DONE'):
@@ -172,13 +177,25 @@ class MissionNode(Node):
         self.cmd_pub.publish(cmd)
         self.state_pub.publish(String(data=self.state))
 
+
     def goto(self, target, max_xy=0.5):
-        error = np.asarray(target,dtype=float)-self.pose
-        if np.linalg.norm(error) < self.p['wp_tolerance']:
+        target_position = np.asarray(target, dtype=float)
+        position_error = target_position - self.pose
+        distance_to_target = np.linalg.norm(position_error)
+
+        if distance_to_target < self.p['wp_tolerance']:
             self.send()
             return True
-        self.send([clip(0.5*error[0],max_xy),clip(0.5*error[1],max_xy), clip(0.8*error[2],0.35)])
+
+        error_x, error_y, error_z = position_error
+
+        velocity_x = clip(0.5 * error_x, max_xy)
+        velocity_y = clip(0.5 * error_y, max_xy)
+        velocity_z = clip(0.8 * error_z, 0.35)
+
+        self.send([velocity_x, velocity_y, velocity_z])
         return False
+
 
     def control(self):
         # Wait for camera calibration and odometry.
@@ -231,24 +248,20 @@ class MissionNode(Node):
             return
 
         # Finished or inactive states send zero velocity.
-        if self.state not in ('ALIGN', 'DESCEND', 'TARGET_LOST'):
+        if self.state not in ('ALIGN', 'DESCEND'):
             self.send()
             return
 
         # Visual tracking requires a recent target estimate.
         target_is_fresh = (
-            self.last_target is not None
-            and self.target_time is not None
+            self.last_target is not None and self.target_time is not None
             and self.get_clock().now().nanoseconds * 1e-9 - self.target_time <= self.p['max_detection_age']
         )
         if not target_is_fresh:
             self.final_stable_count = 0
             self.send()
-            self.set_state('TARGET_LOST')
-            return
-
-        if self.state == 'TARGET_LOST':
             self.set_state('ALIGN')
+            return
 
         error_xy = self.last_target[:2] - self.pose[:2]
         distance_xy = float(np.linalg.norm(error_xy))
@@ -299,6 +312,8 @@ def main(args=None):
         node.evaluator.close()
         node.destroy_node()
         rclpy.shutdown()
+
+
 
 if __name__ == '__main__':
     main()

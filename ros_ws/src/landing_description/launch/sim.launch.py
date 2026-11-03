@@ -71,7 +71,7 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 8. RViz2 (Tự động nạp file cấu hình và đồng bộ thời gian)
+
     rviz2 = Node(
         package='rviz2',
         executable='rviz2',

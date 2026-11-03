@@ -2,12 +2,22 @@
 
 A ROS 2 and Gazebo simulation of a drone searching for an ArUco marker and descending over its estimated position. The drone uses a downward-facing camera for marker detection and odometry for navigation.
 
+
+## Demo
+
+[▶ Watch the drone landing demonstration](docs/demo.mp4)
+
+The video demonstrates autonomous zigzag search, ArUco detection,
+3D marker localization, and precision landing on marker ID 3.
+
 ## Project structure
 
 ```text
 .
 ├── README.md
 ├── .gitignore
+├── docs/
+│   └── demo.mp4
 └── ros_ws/
     └── src/
         ├── landing_control/
