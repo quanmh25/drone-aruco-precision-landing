@@ -1,0 +1,44 @@
+# ROS 2 / colcon generated files
+/ros_ws/build/
+/ros_ws/install/
+/ros_ws/log/
+
+# Python caches and packaging artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local Python environments
+.venv/
+venv/
+
+# ROS runtime logs and recorded data
+.ros/
+rosbag2_*/
+*.db3
+*.db3-shm
+*.db3-wal
+*.mcap
+
+# Generated measurements
+aruco_measurements*.csv
+
+# Editor and operating system files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local credentials
+.env
+.env.*
+!.env.example
+.aws/

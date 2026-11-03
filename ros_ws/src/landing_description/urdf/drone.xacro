@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="parrot_bebop">
+
+  <link name="base_link">
+    
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.503"/> 
+      <inertia ixx="0.001805" ixy="-0.0000008619" ixz="0.00001555" 
+               iyy="0.001764" iyz="0.0000003595" izz="0.003328"/>
+    </inertial>
+
+    <collision>
+      <origin xyz="-0.00424 0.00014 -0.00595" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.24 0.25 0.07"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://landing_description/models/my_drone/meshes/hull.dae" scale="0.75 0.75 0.75"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="-0.06776 -0.08567 -0.00376" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://landing_description/models/my_drone/meshes/propeller_rr.dae" scale="0.75 0.75 0.75"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="-0.06776 0.08589 -0.00376" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://landing_description/models/my_drone/meshes/propeller_rl.dae" scale="0.75 0.75 0.75"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="0.06342 -0.08576 -0.00376" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://landing_description/models/my_drone/meshes/propeller_fr.dae" scale="0.75 0.75 0.75"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="0.06342 0.08597 -0.00376" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://landing_description/models/my_drone/meshes/propeller_fl.dae" scale="0.75 0.75 0.75"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <link name="downward_camera_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.02 0.01"/> </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="downward_camera_link"/>
+    <origin xyz="0 0 -0.015" rpy="0 1.5708 0"/>
+  </joint>
+
+  <gazebo reference="downward_camera_link">
+    <sensor name="bottom_camera" type="camera">
+      <camera>
+        <camera_info_topic>camera/camera_info</camera_info_topic>
+        <horizontal_fov>1.047</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.1</near>
+          <far>100</far>
+        </clip>
+      </camera>
+      <always_on>1</always_on>
+      <update_rate>30</update_rate>
+      <visualize>true</visualize>
+      <topic>/camera/image_raw</topic>
+    </sensor>
+  </gazebo>
+
+  <gazebo>
+    <plugin filename="gz-sim-velocity-control-system" name="gz::sim::systems::VelocityControl">
+      <link_name>base_link</link_name>
+      <topic>/cmd_vel</topic>
+    </plugin>
+
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <dimensions>3</dimensions>
+      <odom_topic>/odom</odom_topic>
+      <odom_publish_frequency>30</odom_publish_frequency>
+    </plugin>
+  </gazebo>
+
+</robot>

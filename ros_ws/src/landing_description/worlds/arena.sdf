@@ -1,0 +1,212 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.8">
+  <world name="default">
+        
+    <model name="track">
+        <static>true</static>
+
+        <link name="black_track">
+            <pose>0 0 0 0 0 0</pose>
+            <collision name="collision">
+            <geometry><box><size>13 11 0.1</size></box></geometry>
+            </collision>
+            <visual name="visual">
+            <geometry><box><size>13 11 0.1</size></box></geometry>
+            </visual>
+        </link>
+    </model>
+
+
+    <!-- City map overlay on the black track -->
+    <model name="city_map">
+        <static>true</static>
+
+        <pose>0 0 0.061 0 0 0</pose>
+
+        <link name="city_map_link">
+            <visual name="city_texture">
+                <geometry>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>9.6 7.2</size>
+                    </plane>
+                </geometry>
+
+                <material>
+                    <ambient>1 1 1 1</ambient>
+                    <diffuse>1 1 1 1</diffuse>
+                    <specular>0 0 0 1</specular>
+
+                    <pbr>
+                        <metal>
+                            <albedo_map>model://landing_description/models/city_arena.jpg</albedo_map>
+                            <metalness>0.0</metalness>
+                            <roughness>1.0</roughness>
+                        </metal>
+                    </pbr>
+                </material>
+            </visual>
+        </link>
+    </model>
+
+
+    <!-- ================= OUTER FENCES (LONGER & WIDER, VALID SDF) ================= -->
+    <model name="fences_outer">
+        <static>true</static>
+
+        <!-- SEGMENT 1 -->
+        <link name="outer_s1">
+            <pose>0 -3.6 0.75 0 0 0</pose>
+            <collision name="collision">
+            <geometry><box><size>9.6 0.1 1.5</size></box></geometry>
+            </collision>
+            <visual name="visual">
+            <geometry><box><size>9.6 0.1 1.5</size></box></geometry>
+            <material>
+                <ambient>0.25 0 0 1</ambient>
+                <diffuse>0.35 0 0 1</diffuse>
+                <specular>0.05 0.05 0.05 1</specular>
+            </material>
+            </visual>
+        </link>
+
+        <!-- SEGMENT 2 -->
+        <link name="outer_s2">
+            <pose>4.8 0 0.75 0 0 1.57</pose>
+            <collision name="collision">
+            <geometry><box><size>7.2 0.1 1.5</size></box></geometry>
+            </collision>
+            <visual name="visual">
+            <geometry><box><size>7.2 0.1 1.5</size></box></geometry>
+            <material>
+                <ambient>0.25 0 0 1</ambient>
+                <diffuse>0.35 0 0 1</diffuse>
+                <specular>0.05 0.05 0.05 1</specular>
+            </material>
+            </visual>
+        </link>
+
+        <!-- SEGMENT 3 -->
+        <link name="outer_s3">
+            <pose>0 3.6 0.75 0 0 3.14</pose>
+            <collision name="collision">
+            <geometry><box><size>9.6 0.1 1.5</size></box></geometry>
+            </collision>
+            <visual name="visual">
+            <geometry><box><size>9.6 0.1 1.5</size></box></geometry>
+            <material>
+                <ambient>0.25 0 0 1</ambient>
+                <diffuse>0.35 0 0 1</diffuse>
+                <specular>0.05 0.05 0.05 1</specular>
+            </material>
+            </visual>
+        </link>
+
+        <!-- SEGMENT 4 -->
+        <link name="outer_s4">
+            <pose>-4.8 0 0.75 0 0 -1.57</pose>
+            <collision name="collision">
+            <geometry><box><size>7.2 0.1 1.5</size></box></geometry>
+            </collision>
+            <visual name="visual">
+            <geometry><box><size>7.2 0.1 1.5</size></box></geometry>
+            <material>
+                <ambient>0.25 0 0 1</ambient>
+                <diffuse>0.35 0 0 1</diffuse>
+                <specular>0.05 0.05 0.05 1</specular>
+            </material>
+            </visual>
+        </link>
+
+    </model>
+
+    <plugin
+    filename="gz-sim-physics-system"
+    name="gz::sim::systems::Physics">
+    </plugin>
+
+    <plugin
+    filename="gz-sim-scene-broadcaster-system"
+    name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+
+    <plugin
+    filename="gz-sim-user-commands-system"
+    name="gz::sim::systems::UserCommands">
+    </plugin>
+
+    <plugin 
+    filename="gz-sim-sensors-system"
+    name="gz::sim::systems::Sensors">
+    <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <light name="sun" type="directional">
+    <cast_shadows>true</cast_shadows>
+    <pose>0 0 10 0 0 0</pose>
+    <diffuse>0.8 0.8 0.8 1</diffuse>
+    <specular>0.2 0.2 0.2 1</specular>
+    <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+    </attenuation>
+    <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+    <static>true</static>
+    <link name="link">
+        <collision name="collision">
+        <geometry>
+            <plane>
+            <normal>0 0 1</normal>
+            <size>100 100</size>
+            </plane>
+        </geometry>
+        </collision>
+        <visual name="visual">
+        <geometry>
+            <plane>
+            <normal>0 0 1</normal>
+            <size>100 100</size>
+            </plane>
+        </geometry>
+        <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+        </material>
+        </visual>
+    </link>
+    </model>
+    
+
+    <!-- id = 3 -->
+    <include>
+        <uri>model://aruco_1</uri>
+        <pose>-2.5 2.7 0.01 0 0 0</pose>
+    </include>
+
+    <!-- id = 23 -->
+    <include>
+        <uri>model://aruco_2</uri>
+        <pose>2.05 0.0 0.01 0 0 0</pose>
+    </include>
+
+    <!-- id = 42 -->
+    <include>
+        <uri>model://aruco_3</uri> 
+        <pose>-3.5 -2.5 0.01 0 0 0</pose> 
+    </include>
+
+    <!-- id = 50 -->
+    <include>
+    <uri>model://aruco_4</uri> 
+    <pose>2.5 0.15 0.01 0 0 0</pose> 
+    </include>
+
+  </world>
+</sdf>
